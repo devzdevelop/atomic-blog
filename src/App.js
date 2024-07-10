@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext } from 'react';
+import { useEffect, useState, createContext, useContext } from 'react';
 import { faker } from '@faker-js/faker';
 
 function createRandomPost() {
@@ -7,11 +7,10 @@ function createRandomPost() {
     body: faker.hacker.phrase(),
   };
 }
+// 1) Create Context
+const PostContext = createContext();
 
 function App() {
-  // 1) Create Context
-  const PostContext = createContext();
-
   const [posts, setPosts] = useState(() =>
     Array.from({ length: 30 }, () => createRandomPost()),
   );
@@ -63,12 +62,7 @@ function App() {
           {isFakeDark ? '☀️' : '🌙'}
         </button>
 
-        <Header
-          posts={searchedPosts}
-          onClearPosts={handleClearPosts}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <Header />
         <Main posts={searchedPosts} onAddPost={handleAddPost} />
         <Archive onAddPost={handleAddPost} />
         <Footer />
@@ -77,25 +71,25 @@ function App() {
   );
 }
 
-function Header({ posts, onClearPosts, searchQuery, setSearchQuery }) {
+function Header() {
+  const { onClearPosts } = useContext(PostContext);
   return (
     <header>
       <h1>
         <span>⚛️</span>The Atomic Blog
       </h1>
       <div>
-        <Results posts={posts} />
-        <SearchPosts
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <Results />
+        <SearchPosts />
         <button onClick={onClearPosts}>Clear posts</button>
       </div>
     </header>
   );
 }
 
-function SearchPosts({ searchQuery, setSearchQuery }) {
+function SearchPosts() {
+  // 3) Consuming the context value
+  const { searchQuery, setSearchQuery } = useContext(PostContext);
   return (
     <input
       value={searchQuery}
@@ -105,7 +99,8 @@ function SearchPosts({ searchQuery, setSearchQuery }) {
   );
 }
 
-function Results({ posts }) {
+function Results() {
+  const { posts } = useContext(PostContext);
   return <p>🚀 {posts.length} atomic posts found</p>;
 }
 
