@@ -24,6 +24,12 @@ body {
   padding: 32px;
 }
 
+.active {
+  text-decoration: underline;
+  color: green !important;
+  text-decoration: underline green !important;
+}
+
 .fake-dark-mode {
   filter: invert(100%);
   transition: all 0.5s;
